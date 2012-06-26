@@ -47,14 +47,30 @@
 
 (define-macro (define-p-struct type . defrefs)
   (include "symbol-append.scm")
-  `(begin
-     (define (,(symbol-append type '?) v)
-       (maybe-object-type= v ',type))
-     ,@(map (lambda (defref)
-	      (let ((fmt (lambda (acc ref)
-			   `(define-p-ref ,type ,acc ,ref))))
-		(if (pair? defref)
-		    (fmt (car defref) (cadr defref))
-		    (fmt defref defref))))
-	    defrefs)))
+  (include "srfi-1.scm") ;; for fold-right
+  (let ((shortfieldsyms (map (lambda (defref)
+			       (if (pair? defref)
+				   (cadr defref)
+				   defref))
+			     defrefs)))
+    `(begin
+       ;; give the short one, ok?
+       (define (,type #!key ,@shortfieldsyms)
+	 ;; don't risk shadowing |vector|; XXX: uh, no way to secure |quote|!!
+	 (##vector ',type
+		   ,@(fold-right
+		      (lambda (v res)
+			(cons (symbol->keyword v)
+			      (cons v res)))
+		      '()
+		      shortfieldsyms)))
+       (define (,(symbol-append type '?) v)
+	 (maybe-object-type= v ',type))
+       ,@(map (lambda (defref)
+		(let ((fmt (lambda (acc ref)
+			     `(define-p-ref ,type ,acc ,ref))))
+		  (if (pair? defref)
+		      (fmt (car defref) (cadr defref))
+		      (fmt defref defref))))
+	      defrefs))))
 

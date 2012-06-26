@@ -38,4 +38,30 @@
         (if (null-list? lis) ans
             (lp (cdr lis) (kons (car lis) ans))))))
 
+(define (%cdrs lists)
+  (call-with-current-continuation
+    (lambda (abort)
+      (let recur ((lists lists))
+        (if (pair? lists)
+            (let ((lis (car lists)))
+              (if (null-list? lis) (abort '())
+                  (cons (cdr lis) (recur (cdr lists)))))
+            '())))))
+
+(define (%cars+ lists last-elt) ; (append! (map car lists) (list last-elt))
+  (let recur ((lists lists))
+    (if (pair? lists) (cons (caar lists) (recur (cdr lists))) (list last-elt))))
+
+(define (fold-right kons knil lis1 . lists)
+  (if (pair? lists)
+      (let recur ((lists (cons lis1 lists)))            ; N-ary case
+        (let ((cdrs (%cdrs lists)))
+          (if (null? cdrs) knil
+              (apply kons (%cars+ lists (recur cdrs))))))
+
+      (let recur ((lis lis1))                           ; Fast path
+        (if (null-list? lis) knil
+            (let ((head (car lis)))
+              (kons head (recur (cdr lis))))))))
+
 ;; /COPY

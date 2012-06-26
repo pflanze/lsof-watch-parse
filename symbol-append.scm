@@ -18,3 +18,5 @@
            symbol-or-string->string
            vals))))
 
+(define (symbol->keyword v)
+  (string->keyword (symbol->string v)))

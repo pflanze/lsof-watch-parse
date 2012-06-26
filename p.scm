@@ -51,7 +51,7 @@
   (inode i)
   ;; @ prefix to indicate unsafety because of overloading
   (@device d) ;; for REG, CHR, FIFO  "device character code"
-  (@port d) ;; for IPv4 --hm not sure./not always.
+  ;;(@port d) ;; for IPv4 --hm not sure./not always.
   (size s) ;; for REG
   (access a) ;; r, w, u
   (device-number D) ;; major/minor device number (0x<hexadecimal>)
