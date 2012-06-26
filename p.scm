@@ -179,12 +179,18 @@
 
 ;; === extraction
 
+(define no-ip-addrs
+  (ip-addrs ipv4: '() ipv6: '()))
+
+
 ;; if a stream missed ip-addrs in the first record, open it anew and
-;; search for the first occurrence; returns '() if there is none.
+;; search for the first occurrence; returns no-ip-addrs object if
+;; there is none.
+
 (define (path-first-ip-addrs path)
   (let rec ((s* (open-point-stream path)))
     (let ((s (force s*)))
-      (if (null? s) '()
+      (if (null? s) no-ip-addrs
 	  (let ((p (car s))
 		(s** (cdr s)))
 	    (if (point? p)
