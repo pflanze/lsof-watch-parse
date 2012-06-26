@@ -37,3 +37,5 @@ you. Like
  $ gsc p
  $ gsi p -e '(path-print-time/numfilehandles/numIPconnections/topIP "path/to/logfile.gz")' > logextract.txt
 
+
+Note: the possible message "gzip: stdout: Broken pipe" is harmless.
