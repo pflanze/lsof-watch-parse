@@ -15,10 +15,14 @@ about open files on a given Unix process.
 
 this gives a help text.
 
- $ daemonize --bg lsof-watch 1297 --alarm-on 1000 --on-alarm cat --sexpr-to logfile.gz -i 30
+ $ daemonize --bg lsof-watch 1234 --alarm-on 1000 --on-alarm cat \
+     --sexpr-to logfile.gz -i 5
 
-Replace the 'cat' with the name or path of a script that notifies
-you. Like
+Change the '1234' to the pid of the process to be watched, adapt the
+'1000' to something below the limit on the number of filehandles (see
+"-n" in "help ulimit" in bash), and increase the '5' to something
+bigger if this uses too much CPU or log space. Replace the 'cat' with
+the name or path of a script that notifies you. Like
 
  #!/bin/bash
 
