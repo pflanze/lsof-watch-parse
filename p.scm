@@ -180,7 +180,7 @@
 ;; === extraction
 
 (define no-ip-addrs
-  (ip-addrs ipv4: '() ipv6: '()))
+  (ip-addrs ipv4: '("127.0.0.1") ipv6: '("::1")))
 
 
 ;; if a stream missed ip-addrs in the first record, open it anew and
